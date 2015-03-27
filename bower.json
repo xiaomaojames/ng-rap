@@ -16,6 +16,8 @@
   "license": "MIT",
   "ignore": [
     "**/.*",
+    "build.sh",
+    "src",
     "node_modules",
     "bower_components",
     "test",
