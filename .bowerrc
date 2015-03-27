@@ -1,1 +1,9 @@
-{"registry":{"search":["http://bower.fed.taobao.net/","https://bower.herokuapp.com/"],"register":"http://bower.fed.taobao.net/"}}
+{
+  "registry": {
+    "search": [
+      "http://bower.fed.taobao.net/",
+      "https://bower.herokuapp.com/"
+    ],
+    "register": "http://bower.fed.taobao.net/"
+  }
+}
