@@ -1,0 +1,24 @@
+{
+  "name": "ng-rap",
+  "main": "index.js",
+  "version": "0.0.1",
+  "authors": [
+    "义宇 <yiyu.ljw@taobao.com>"
+  ],
+  "registry": {
+    "search": [
+      "http://bower.fed.taobao.net",
+      "https://bower.herokuapp.com/"
+    ],
+    "register": "http://bower.fed.taobao.net"
+  },
+  "description": "rap plugin for angular",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
