@@ -4,6 +4,6 @@
       "http://bower.fed.taobao.net/",
       "https://bower.herokuapp.com/"
     ],
-    "register": "http://bower.fed.taobao.net/"
+    "register": "https://bower.herokuapp.com/"
   }
 }

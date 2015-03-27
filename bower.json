@@ -5,13 +5,6 @@
   "authors": [
     "义宇 <yiyu.ljw@taobao.com>"
   ],
-  "registry": {
-    "search": [
-      "http://bower.fed.taobao.net",
-      "https://bower.herokuapp.com/"
-    ],
-    "register": "http://bower.fed.taobao.net"
-  },
   "description": "rap plugin for angular",
   "license": "MIT",
   "ignore": [

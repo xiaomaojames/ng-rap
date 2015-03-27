@@ -1,7 +1,5 @@
 ## 安装
 
-* 请使用[内网 bower](http://bower.fed.taobao.net/)
-
 * `$ bower install ng-rap`
 
 * 页面中加入`<script src="bower_components/ng-rap/dist/ng-rap.min.js"></script>`
