@@ -1,20 +1,23 @@
 angular.module('ngRap', ['opensearchConfig'])
 .config(['$httpProvider', function(httpProvider) {
+    var mockParam = window.location.search.match(/mock=?(\d)?/);
+    var mode = mockParam ? +mockParam[1] : 0;
     if (window.RAP) {
-    	var mockParam = window.location.search.match(/mock=?(\d)?/);
-    	var mode = mockParam ? +mockParam[1] : 0;
-    	RAP.setMode(mode);
-        httpProvider.interceptors.unshift('rapMockInterceptor');
+        RAP.setMode(mode);
     }
+
+    httpProvider.interceptors.unshift('rapMockInterceptor');
 }])
 .factory('rapMockInterceptor', [function() {
     return {
         request: function(config) {
-        	var mode = RAP.getMode();
-            var whiteList = window.RAP ? RAP.getWhiteList() : [];
-            var blackList = window.RAP ? RAP.getBlackList() : [];
+            if (!window.RAP) return config;
+
+            var mode = RAP.getMode();
+            var whiteList = RAP.getWhiteList();
+            var blackList = RAP.getBlackList();
             var url = config.url;
-        	var mockUrl = 'http://' + RAP.getHost() + '/mockjsdata/' + RAP.getProjectId() + url;
+            var mockUrl = 'http://' + RAP.getHost() + '/mockjsdata/' + RAP.getProjectId() + url;
 
             switch (mode) {
                 case 0: //不拦截
