@@ -11,7 +11,15 @@ angular.module('ngRap', [])
 			var deferred = q.defer();
 			var script = document.createElement('script');
 			script.src = provider.script;
-			script.onload = script.onerror = deferred.resolve;
+			script.onload = script.onreadystatechange = function(_, isAbort) {
+				if (isAbort || !script.readyState || /loaded|complete/.test(script.readyState)) {
+					script.onload = script.onreadystatechange = null;
+					script = undefined;
+					if (!isAbort) {
+						deferred.resolve();
+					}
+				}
+			};
 			document.body.appendChild(script);
 			return deferred.promise;
 		}
