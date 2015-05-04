@@ -2,10 +2,14 @@
 
 * `$ bower install ng-rap`
 
-* 页面中加入`<script src="bower_components/ng-rap/dist/ng-rap.min.js"></script>`
-
-* `var myApp = angular.module('myApp', ['ngRap']);`
-
 ## 使用
 
-访问页面加入 `?mock=`，用于指定 rap 模式。
+```
+angular.module('myApp', ['ngRap']).config(['httpProvider', 'ngRapProvider', function(httpProvider, ngRapProvider) {
+	ngRapProvider.script = 'http://rap.alibaba-inc.com/rap.plugin.js?projectId=nnn'; // replce nnn with your project id
+	ngRapProvider.enable({
+		mode: 3
+	});
+	httpProvider.interceptors.push('rapMockInterceptor');
+}]);
+```
