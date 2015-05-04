@@ -2,11 +2,12 @@ angular.module('ngRap', [])
 .provider('ngRap', [function() {
 	var provider = this;
 
-	this.enable = function() {
+	this.enable = function(options) {
 		this.enabled = true;
+		this.mode = options.mode;
 	};
 
-	this.$get = ['$q', function(q) {
+	this.$get = ['$injector', '$q', function(injector, q) {
 		function init() {
 			var deferred = q.defer();
 			var script = document.createElement('script');
@@ -25,40 +26,53 @@ angular.module('ngRap', [])
 		}
 
 		var ngRap = {
+			check: function(url, data) {
+				var http = injector.get('$http');
+				http.get(url).success(function(result) {
+					RAP.checkerHandler.call({
+						data: data
+					}, result);
+				});
+			},
 			intercept: function(config) {
 				var mode = RAP.getMode();
 				var whiteList = RAP.getWhiteList();
 				var blackList = RAP.getBlackList();
 				var url = config.url;
-				var mockUrl = 'http://' + RAP.getHost() + '/mockjsdata/' + RAP.getProjectId() + url;
+				var mockHost = 'http://' + RAP.getHost() + '/mockjsdata/' + RAP.getProjectId();
+				var mockUrl = mockHost + url;
+				var http = injector.get('$http');
 
-				switch (mode) {
-                    case 0: //不拦截
-                    break;
-                    case 1: //拦截全部
-                    config.mocked = true;
-                    config.url = mockUrl;
-                    break;
-                    case 2: //黑名单中的项不拦截
-                    if (blackList.indexOf(url) == -1) {
-                    	config.mocked = true;
-                    	config.url = mockUrl;
-                    }
-                    break;
-                    case 3: //仅拦截白名单中的项
-                    if (whiteList.indexOf(url) != -1) {
-                    	config.mocked = true;
-                    	config.url = mockUrl;
-                    }
-                    break;
+				if (config.url.indexOf(mockHost) != -1) {
+					return config;
+				}
+
+                if (mode == 0) {
+                	if (whiteList.indexOf(url) != -1) {
+                		config.needCheck = mockUrl;
+                	}
+                	return config;
+                } else if (mode == 1) {
+                	config.mocked = true;
+                	config.url = mockUrl;
+                	return config;
+                } else if (mode == 2) {
+                	if (blackList.indexOf(url) == -1) {
+                		config.mocked = true;
+                		config.url = mockUrl;
+                	}
+                	return config;
+                } else if (mode == 3) {
+                	if (whiteList.indexOf(url) != -1) {
+                		config.mocked = true;
+                		config.url = mockUrl;
+                	}
+                	return config;
                 }
-                return config;
             },
             loaded: provider.enabled && init().then(function() {
-				var mockParam = window.location.search.match(/mock=?(\d)?/);
-				var mode = mockParam ? +mockParam[1] : 0;
 				if (window.RAP) {
-					RAP.setMode(mode);
+					RAP.setMode(provider.mode);
 				}
 			})
 		};
@@ -66,10 +80,7 @@ angular.module('ngRap', [])
 		return ngRap;
     }];
 }])
-.config(['$httpProvider', function(httpProvider) {
-	httpProvider.interceptors.unshift('rapMockInterceptor');
-}])
-.factory('rapMockInterceptor', ['ngRap', function(ngRap) {
+.factory('rapMockInterceptor', ['$q', 'ngRap', function(q, ngRap) {
 	return {
 		request: function(config) {
 			if (ngRap.loaded) {
@@ -79,6 +90,17 @@ angular.module('ngRap', [])
 			} else {
 				return config;
 			}
+		},
+		response: function(res) {
+			var data = res.data;
+			if (ngRap.loaded && !res.config.mocked) {
+				ngRap.loaded.then(function() {
+					if (res.config.needCheck) {
+						ngRap.check(res.config.needCheck, data);
+					}
+				});
+			}
+			return res;
 		}
 	};
 }]);
