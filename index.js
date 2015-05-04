@@ -2,6 +2,16 @@ angular.module('ngRap', [])
 .provider('ngRap', [function() {
 	var provider = this;
 
+	function isInWhiteList(whiteList, url) {
+		return whiteList.some(function(o) {
+			if (typeof o === 'string' && (url.indexOf(o) >= 0 || o.indexOf(url) >= 0)) {
+				return true;
+			} else if (typeof o === 'object' && o instanceof RegExp && o.test(url)) {
+				return true;
+			}
+		});
+	}
+
 	this.enable = function(options) {
 		this.enabled = true;
 		this.mode = options.mode;
@@ -36,39 +46,24 @@ angular.module('ngRap', [])
 			},
 			intercept: function(config) {
 				var mode = RAP.getMode();
-				var whiteList = RAP.getWhiteList();
-				var blackList = RAP.getBlackList();
 				var url = config.url;
 				var mockHost = 'http://' + RAP.getHost() + '/mockjsdata/' + RAP.getProjectId();
 				var mockUrl = mockHost + url;
+				var whiteList = RAP.getWhiteList();
 				var http = injector.get('$http');
 
-				if (config.url.indexOf(mockHost) != -1) {
+				if (config.url.indexOf(mockHost) == 0) {
 					return config;
 				}
 
-                if (mode == 0) {
-                	if (whiteList.indexOf(url) != -1) {
-                		config.needCheck = mockUrl;
-                	}
-                	return config;
-                } else if (mode == 1) {
-                	config.mocked = true;
-                	config.url = mockUrl;
-                	return config;
-                } else if (mode == 2) {
-                	if (blackList.indexOf(url) == -1) {
-                		config.mocked = true;
-                		config.url = mockUrl;
-                	}
-                	return config;
-                } else if (mode == 3) {
-                	if (whiteList.indexOf(url) != -1) {
-                		config.mocked = true;
-                		config.url = mockUrl;
-                	}
-                	return config;
+				if (RAP.router(url)) {
+					config.mocked = true;
+					config.url = mockUrl
+				} else if (mode == 0 && isInWhiteList(whiteList, url)) {
+                	config.needCheck = mockUrl;
                 }
+
+				return config;
             },
             loaded: provider.enabled && init().then(function() {
 				if (window.RAP) {
