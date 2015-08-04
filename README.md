@@ -5,7 +5,7 @@
 ## 使用
 
 ```
-angular.module('myApp', ['ngRap']).config(['httpProvider', 'ngRapProvider', function(httpProvider, ngRapProvider) {
+angular.module('myApp', ['ngRap']).config(['$httpProvider', 'ngRapProvider', function(httpProvider, ngRapProvider) {
 	ngRapProvider.script = 'http://rap.alibaba-inc.com/rap.plugin.js?projectId=nnn'; // replce nnn with your project id
 	ngRapProvider.enable({
 		mode: 3
