@@ -1,0 +1,16 @@
+{
+  "name": "ng-rap",
+  "version": "0.2.2",
+  "description": "rap mock plugin for angular",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/goto100/ng-rap.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/goto100/ng-rap/issues"
+  },
+  "homepage": "https://github.com/goto100/ng-rap"
+}
