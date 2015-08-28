@@ -6,7 +6,7 @@
 
 ```
 angular.module('myApp', ['ngRap']).config(['$httpProvider', 'ngRapProvider', function(httpProvider, ngRapProvider) {
-	ngRapProvider.script = 'http://rap.alibaba-inc.com/rap.plugin.js?projectId=nnn'; // replce nnn with your project id
+	ngRapProvider.script = 'http://xxx.xxx.xxx/rap.plugin.js?projectId=nnn'; // replce your host and project id
 	ngRapProvider.enable({
 		mode: 3
 	});
