@@ -46,6 +46,7 @@ angular.module('ngRap', [])
 			},
 			intercept: function(config) {
 				var mode = RAP.getMode();
+				RAP.setBlackList([/html/g]); // 不拦截所有的html模板代码
 				var url = config.url;
 				var mockHost = 'http://' + RAP.getHost() + '/mockjsdata/' + RAP.getProjectId();
 				var mockUrl = mockHost + url;
